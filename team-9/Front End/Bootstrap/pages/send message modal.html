@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+        <link rel="stylesheet" src="/src/css/style.css">
+        <link rel="stylesheet" src="/src/css/normalize.css">
+        <link rel="stylesheet" src="/src/css/stylesheet.css">
+        <link rel="stylesheet" src="/src/css/selectize2.default.css">
+        <script src="../js/jquery.min.js"></script>
+        <script src="../js/standalone/selectize.js"></script>
+        <script src="../js/index1.js"></script>
+        <script src="../js/plugin.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>-->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+        <style>
+            #map {
+                height: 400px;
+                width: 100%;
+            }
+        </style>
+
+    </head>
+    <body>
+
+        <div class="container" align="center">
+            <h2>Active Alerts</h2>
+            <div class="boxed">
+                <div class="boxed">
+                    <p class="message">Active shooter spotted in central Syria, stay clear and be alert.</p>
+                    <p class="author"><font color="grey">Hunter Bartholomew</font></p>
+                    <p class="timestamp"><font color="grey">10/28/2017 18:37 GMT</font></p>
+                </div>
+                <br>
+                <div class="boxed">
+                    <p class="message">Bomb threats in northwestern Iraq</p>
+                    <p class="author"><font color="grey">Hunter Bartholomew</font></p>
+                    <p class="timestamp"><font color="grey">10/28/2017 20:37 GMT</font></p>
+                    <br>
+                </div>
+            </div>
+        </div>
+
+        <br>        
+        <div class="container" align="center">
+            <!-- Trigger the modal with a button -->
+            <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">New Alert</button>
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <script>
+                        $('#myModal').modal({
+                            show: false,
+                            backdrop: 'static',
+                            keyboard: false
+                        })
+                    </script>
+                    <div class="modal-content" >
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title" style="text-align: center">New Alert</h4>
+                        </div>
+
+                        <div class="modal-body">
+
+                            <div class="demo">
+                                <div class="control-group">
+                                    <div class="headers">
+                                        <label for="select-state">Regions</label>
+                                    </div>
+                                    <br>
+                                    <select id="select-symptoms" name="symptoms[]" multiple class="demo-default" style="width: 300px" placeholder="Select regions...">
+                                        <option value="">Select regions...</option>
+                                        <option value = "Joint Pain">North Syria</option>
+                                        <option value = "Fatigue">South Syria</option>
+                                        <option value = "Nasuea">South Turkey</option>
+                                        <option value = "Swelling">North Iraq</option>
+                                        <option value = "Cough">Lebanon</option>
+                                        <option value = "Arthritis">Jordan</option>
+                                    </select>
+                                </div>
+                                <script>
+                                    $('#select-symptoms').selectize({
+                                        maxItems: 50,
+                                        plugins: {'item_color': {colorField: 'black'}}
+                                    });
+                                </script>
+                            </div>
+                            <br>
+                            <div class="headers">
+                                <label>Alert Message</label>
+                            </div>
+                            <br>
+                            <div class='Option'>
+                                <textarea id="emAlert" cols="42" rows="3" placeholder="Message"></textarea>
+                            </div>
+                            <input type="checkbox" id="requireReply" name="reply" value="replyReq">
+                            <label for="requireReply">Require Response within 24 hours</label>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" id="btnSubmit" data-dismiss="modal" >Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- THIS IS AN AWFUL WAY TO DO THIS, THIS IS STRICTLY FOR DEMO PURPOSES
+              THIS IS A WORKAROUND TO NOT HAVING NODE FOR THE TWILIO API-->
+        <script>
+            $(document).ready(function() {
+                $("#btnSubmit").click(function(){
+                    // Your Twilio credentials
+                    var SID = "AC34c72a916433b623a7037872ede01d5f"
+                    var Key = "98d7d6f929f401a61fe20128e65765c4"
+
+                    $.ajax({
+                        type: 'POST',
+                        url: 'https://api.twilio.com/2010-04-01/Accounts/' + SID + '/Messages.json',
+                        data: {
+                            "To" : "+17706080735",
+                            "From" : "+16787218440",
+                            "Body" : $("#emAlert").val()
+                        },
+                        beforeSend: function (xhr) {
+                            xhr.setRequestHeader ("Authorization", "Basic " + btoa(SID + ':' + Key));
+                        },
+                        success: function(data) {
+                            console.log(data);
+                        },
+                        error: function(data) {
+                            console.log(data);
+                        }
+                    });
+                });
+            });
+        </script>
+        <script>
+            $('#input-tags').selectize({
+                persist: false,
+                createOnBlur: true,
+                create: true
+            });
+        </script>
+    </body>
+
+    <!--
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.js" type="text/javascript"></script>
+-->
+
+    <!--<script src="../js/plusminus.js"></script>-->
+    <link rel="stylesheet" type="text/css" href="../css/hunter.css">
+</html>
